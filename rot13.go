@@ -2,7 +2,6 @@ package rot13
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"net"
 	"strings"
@@ -76,5 +75,9 @@ func (c *Client) Send(s string) error {
 
 // Receive returns message from the server or error.
 func (c *Client) Receive() (string, error) {
-	return "", errors.New("not implemented")
+	scanner := bufio.NewScanner(c.Conn)
+	for scanner.Scan() {
+		return scanner.Text(), nil
+	}
+	return "", scanner.Err()
 }
