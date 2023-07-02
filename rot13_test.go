@@ -72,6 +72,11 @@ func TestClientSendsData(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	message, err := client.Receive()
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 // waitForConn returns connection to the server.
