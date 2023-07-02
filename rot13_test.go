@@ -73,7 +73,7 @@ func TestClientSendsData(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	message, err := client.Receive()
+	_, err = client.Receive()
 	if err != nil {
 		t.Fatal(err)
 	}

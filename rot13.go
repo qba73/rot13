@@ -2,6 +2,7 @@ package rot13
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"net"
 	"strings"
@@ -71,4 +72,9 @@ func NewClient(addr string) (*Client, error) {
 func (c *Client) Send(s string) error {
 	_, err := fmt.Fprintln(c.Conn, s)
 	return err
+}
+
+// Receive returns message from the server or error.
+func (c *Client) Receive() (string, error) {
+	return "", errors.New("not implemented")
 }
