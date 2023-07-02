@@ -2,23 +2,25 @@ package rot13
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"net"
+	"os"
 	"strings"
 )
 
 // RunServer starts a new rot server.
-func RunServer(addr string) {
+func RunServer(addr string) error {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer l.Close()
 
 	for {
 		conn, err := l.Accept()
 		if err != nil {
-			fmt.Fprintln(conn, err)
+			return err
 		}
 
 		// Handle connection
@@ -80,4 +82,25 @@ func (c *Client) Receive() (string, error) {
 		return scanner.Text(), nil
 	}
 	return "", scanner.Err()
+}
+
+// StartServer runs the Rot13 server on a default address :8080
+// unless otherwise specified. The server accepts a network
+// address as a parameter.
+//
+// Examples:
+// rot13 -address=":9090"
+// rot13 -address="127.0.0.1:8086"
+func StartServer() {
+	fset := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+	addr := fset.String("addr", ":8080", "Network address the Rot13 server listens, for example: :8090, 127.0.0.1:8088")
+	err := fset.Parse(os.Args[1:])
+	if err != nil {
+		os.Exit(1)
+	}
+	address := *addr
+	if err = RunServer(address); err != nil {
+		// can't start the rot13 server, bail
+		panic(err)
+	}
 }
