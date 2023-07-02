@@ -1,7 +1,9 @@
 package rot13_test
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"net"
 	"testing"
 	"time"
@@ -12,14 +14,18 @@ import (
 func TestServerSendsCorrectData(t *testing.T) {
 	t.Parallel()
 
-	// Start rot13 server
+	// Start rot13 server.
 	go rot13.RunServer()
 
 	// Connect to the server
 	conn := waitForConn()
 
-	// Send data to the connection
+	// Send data to the connection.
 	fmt.Fprintln(conn, "hello")
+
+	// Check response from server and
+	// verify if data is correct.
+	expectResponse(t, "uryyb\n", conn)
 }
 
 // waitForConn returns connection to the server.
@@ -35,5 +41,21 @@ func waitForConn() net.Conn {
 			return conn
 		}
 		time.Sleep(10 * time.Millisecond)
+	}
+}
+
+// expectResponse is a test helper that encapsulates
+// bahavior of reading from the connection and checking
+// if the data received match wanted data.
+func expectResponse(t *testing.T, want string, conn net.Conn) {
+	t.Helper()
+	got, err := io.ReadAll(conn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantResult := []byte(want)
+
+	if !bytes.Equal(wantResult, got) {
+		t.Errorf("want %q, got %q", want, got)
 	}
 }
