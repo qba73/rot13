@@ -51,3 +51,11 @@ func doRot13(s string) string {
 	}
 	return string(r13)
 }
+
+type Client struct {
+	Conn net.Conn
+}
+
+func NewClient(addr string) (*Client, error) {
+	return &Client{}, nil
+}

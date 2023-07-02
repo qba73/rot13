@@ -59,7 +59,7 @@ func TestClientSendsData(t *testing.T) {
 		}
 	}()
 
-	client, err := rot13.NewClient(testAddr)
+	_, err = rot13.NewClient(testAddr)
 	if err != nil {
 		t.Fatal(err)
 	}
