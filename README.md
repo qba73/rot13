@@ -4,7 +4,7 @@
 
 `rot13` is an educational project to play with the Go [net](https://pkg.go.dev/net) package and concurrency.
 
-# Using `rot13` server
+## Using `rot13` server
 
 Build the server:
 
