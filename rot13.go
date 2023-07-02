@@ -2,6 +2,7 @@ package rot13
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"net"
 	"strings"
@@ -58,4 +59,8 @@ type Client struct {
 
 func NewClient(addr string) (*Client, error) {
 	return &Client{}, nil
+}
+
+func (c *Client) Send(s string) error {
+	return errors.New("not implemented")
 }
