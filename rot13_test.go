@@ -1,6 +1,7 @@
 package rot13_test
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"io"
@@ -30,6 +31,38 @@ func TestServerSendsCorrectData(t *testing.T) {
 	// verify if data is correct.
 	expectResponse(t, "uryyb-tbcuref\n", conn1)
 	expectResponse(t, "olr-tbcuref\n", conn2)
+}
+
+func TestClientSendsData(t *testing.T) {
+	t.Parallel()
+
+	testAddr := ":8090"
+	// Server (listener) processes incoming connections and data.
+	listener, err := net.Listen("tcp", testAddr)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	go func() {
+		conn, err := listener.Accept()
+		if err != nil {
+			panic(err)
+		}
+		scanner := bufio.NewScanner(conn)
+		for scanner.Scan() {
+			got := scanner.Text()
+			if got != "hello" {
+				t.Errorf("server wants 'hello\n', got %q", got)
+			}
+			// Send expected data (string modified by rot13 algorithm) to the client.
+			fmt.Fprint(conn, "urryb\n")
+		}
+	}()
+
+	client, err := rot13.NewClient(testAddr)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 // waitForConn returns connection to the server.
