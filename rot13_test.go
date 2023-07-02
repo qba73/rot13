@@ -77,9 +77,7 @@ func TestClientSendsData(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	want := "hello"
-
+	want := "urryb"
 	if want != got {
 		t.Errorf("want %q, got %q", want, got)
 	}
