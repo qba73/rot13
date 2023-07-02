@@ -8,8 +8,8 @@ import (
 )
 
 // RunServer starts a new rot server.
-func RunServer() {
-	l, err := net.Listen("tcp", ":8080")
+func RunServer(addr string) {
+	l, err := net.Listen("tcp", addr)
 	if err != nil {
 		panic(err)
 	}

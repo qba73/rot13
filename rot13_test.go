@@ -14,12 +14,13 @@ import (
 func TestServerSendsCorrectData(t *testing.T) {
 	t.Parallel()
 
+	testAddr := ":8080"
 	// Start rot13 server.
-	go rot13.RunServer()
+	go rot13.RunServer(testAddr)
 
 	// Connect to the server and use two independent connections.
-	conn1 := waitForConn()
-	conn2 := waitForConn()
+	conn1 := waitForConn(testAddr)
+	conn2 := waitForConn(testAddr)
 
 	// Send data to connections.
 	fmt.Fprintln(conn1, "hello gophers")
@@ -37,9 +38,9 @@ func TestServerSendsCorrectData(t *testing.T) {
 // it waits 10ms before trying to connect again. As we launch
 // the server in a separate goroutine, waiting
 // until the server is ready to accept connections is necessary.
-func waitForConn() net.Conn {
+func waitForConn(addr string) net.Conn {
 	for {
-		conn, err := net.Dial("tcp", ":8080")
+		conn, err := net.Dial("tcp", addr)
 		if err == nil {
 			return conn
 		}
