@@ -17,15 +17,18 @@ func TestServerSendsCorrectData(t *testing.T) {
 	// Start rot13 server.
 	go rot13.RunServer()
 
-	// Connect to the server
-	conn := waitForConn()
+	// Connect to the server and use two independent connections.
+	conn1 := waitForConn()
+	conn2 := waitForConn()
 
-	// Send data to the connection.
-	fmt.Fprintln(conn, "hello")
+	// Send data to connections.
+	fmt.Fprintln(conn1, "hello gophers")
+	fmt.Fprintln(conn2, "bye gophers")
 
-	// Check response from server and
+	// Check responses from the server and
 	// verify if data is correct.
-	expectResponse(t, "uryyb\n", conn)
+	expectResponse(t, "uryyb-tbcuref\n", conn1)
+	expectResponse(t, "olr-tbcuref\n", conn2)
 }
 
 // waitForConn returns connection to the server.
