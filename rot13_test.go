@@ -43,6 +43,8 @@ func TestClientSendsData(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	testMessage := "hello"
+
 	go func() {
 		conn, err := listener.Accept()
 		if err != nil {
@@ -51,8 +53,9 @@ func TestClientSendsData(t *testing.T) {
 		scanner := bufio.NewScanner(conn)
 		for scanner.Scan() {
 			got := scanner.Text()
-			if got != "hello" {
-				t.Errorf("server wants 'hello\n', got %q", got)
+			if got != testMessage {
+				errMessage := fmt.Sprintf("server wants '%s\n', got %q", testMessage, got)
+				panic(errMessage)
 			}
 			// Send expected data (string modified by rot13 algorithm) to the client.
 			fmt.Fprint(conn, "urryb\n")
@@ -64,7 +67,8 @@ func TestClientSendsData(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = client.Send("hello")
+	// Check if test fails when changing the testMessage to a different string.
+	err = client.Send(testMessage)
 	if err != nil {
 		t.Fatal(err)
 	}

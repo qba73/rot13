@@ -2,7 +2,6 @@ package rot13
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"net"
 	"strings"
@@ -53,14 +52,23 @@ func doRot13(s string) string {
 	return string(r13)
 }
 
+// Client is a rot13 client
 type Client struct {
 	Conn net.Conn
 }
 
+// NewClient creates a new rot13 network client.
+// It errors if it can't connect on the provided addr.
 func NewClient(addr string) (*Client, error) {
-	return &Client{}, nil
+	conn, err := net.Dial("tcp", addr)
+	if err != nil {
+		return nil, err
+	}
+	return &Client{Conn: conn}, nil
 }
 
+// Send takes a string and sends it to the server.
 func (c *Client) Send(s string) error {
-	return errors.New("not implemented")
+	_, err := fmt.Fprintln(c.Conn, s)
+	return err
 }
