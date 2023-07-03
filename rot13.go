@@ -13,7 +13,7 @@ import (
 func RunServer(addr string) error {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		return err
+		panic(fmt.Sprintf("failed to listen on %v: %v", addr, err))
 	}
 	defer l.Close()
 
